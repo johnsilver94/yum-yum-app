@@ -1,14 +1,26 @@
-import '@babel/polyfill'
+/* eslint-disable arrow-parens */
+import '@babel/polyfill';
 import Vue from 'vue';
-import './plugins/vuetify'
+import './plugins/vuetify';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import firebase from './firebase/index';
 
 Vue.config.productionTip = false;
 
-new Vue({
-  router,
-  store,
-  render: h => h(App),
-}).$mount('#app');
+/* eslint-disable no-new */
+const unsubscribe = firebase.auth().onAuthStateChanged(firebaseUser => {
+  new Vue({
+    el: '#app',
+    router,
+    store,
+    render: h => h(App),
+    created() {
+      if (firebaseUser) {
+        store.dispatch('autoSignIn', firebaseUser);
+      }
+    }
+  });
+  unsubscribe();
+});
