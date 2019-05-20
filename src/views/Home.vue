@@ -16,9 +16,11 @@
                       <br>help you to prepare your meal
                     </blockquote>
                   </v-flex>
-                  <v-flex xs6 sm6 offset-sm3 mt-3 class="text-xs-center" mt-5>
+                  <v-flex xs2 sm2 offset-sm3 mt-2 class="text-xs-center" mt-5>
                     <v-btn color="primary" to="/signup">Sign Up</v-btn>
-                    <v-btn to="/signin">Sign In</v-btn>
+                  </v-flex>
+                  <v-flex xs2 sm2 offset-sm2 mt-2 class="text-xs-center" mt-5>
+                    <v-btn color="info" to="/signin">Sign In</v-btn>
                   </v-flex>
                 </v-layout>
               </v-card-text>

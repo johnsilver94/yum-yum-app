@@ -10,14 +10,15 @@
           <v-card-text>
             <div class="title my-5">{{item.name}}</div>
 
-            <div class="subheading">Ingredients</div>
+            <div class="subheading">Ingredients:</div>
+            <!-- <div>{{item.description}}</div> -->
             <ul>
-              <li v-for="(ingredient, i) in item.ingredients" :key="i">{{ingredient}}</li>
+              <li v-for="(line, i) in item.descriptionLines" :key="i">{{line}}</li>
             </ul>
           </v-card-text>
 
           <v-card-actions>
-            <v-btn color="green" dark>Video recipes</v-btn>
+            <v-btn color="green" dark @click="videoRecipe(item.name)">Video recipes</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -27,32 +28,24 @@
 
 <script>
 export default {
-  data: () => ({
-    recipes: [
-      {
-        name: "Keto Chocolate Smoothie recipes",
-        image:
-          "https://www.edamam.com/web-img/083/0834f93ea42c9df7e2faf4125f2b13c1",
-        ingredients: [
-          "1 can full fat coconut milk (375 grams)",
-          "¼ cup egg-white protein powder (20 grams)",
-          "2 tablespoons ground chia seeds (20 grams)",
-          "½ teaspoon vanilla stevia",
-          "&frac13; cup chopped 85% dark chocolate (50 grams)",
-          "2-3 cups ice"
-        ]
-      }
-    ]
-  }),
+  data: () => ({}),
+  created: function() {
+    this.$store.dispatch("getRecipes");
+    this.$store.state.search = false;
+  },
   computed: {
-    // recipes() {
-    //   return this.$store.state.recipes;
-    // },
+    recipes() {
+      return this.$store.state.recipes;
+    },
     isAuthenticated() {
       return this.$store.getters.isAuthenticated;
     }
   },
-  methods: {}
+  methods: {
+    videoRecipe(name) {
+      window.open(`https://www.youtube.com/results?search_query=${name}`);
+    }
+  }
 };
 </script>
 

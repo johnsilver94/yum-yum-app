@@ -13,9 +13,7 @@
     <v-toolbar app color="brown darken-4" dark>
       <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer class="hidden-md-and-up"></v-spacer>
-      <router-link to="/">
-        <v-toolbar-title data-cy="titleBtn">{{appTitle}}</v-toolbar-title>
-      </router-link>
+      <v-toolbar-title data-cy="titleBtn">{{appTitle}}</v-toolbar-title>
       <v-btn flat class="hidden-sm-and-down nav-menu" to="/recipes" data-cy="menuBtn">Recipes</v-btn>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
       <div v-if="!isAuthenticated" class="hidden-sm-and-down">

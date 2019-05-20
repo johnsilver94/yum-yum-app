@@ -5,6 +5,8 @@ import Recipes from './views/Recipes.vue';
 import Home from './views/Home.vue';
 import Signin from './views/Signin.vue';
 import Signup from './views/Signup.vue';
+import AddIngredient from './views/AddIngredient.vue';
+import AddRecipe from './views/AddRecipe.vue';
 import NotFound from './views/NotFound.vue';
 
 Vue.use(Router);
@@ -37,6 +39,16 @@ export default new Router({
       path: '/recipes',
       name: 'Recipes',
       component: Recipes
+    },
+    {
+      path: '/add-ingredient',
+      name: 'Add Ingredient',
+      component: AddIngredient
+    },
+    {
+      path: '/add-recipe',
+      name: 'Add Recipe',
+      component: AddRecipe
     },
     {
       path: '*',

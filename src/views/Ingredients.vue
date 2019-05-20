@@ -1,6 +1,6 @@
 <template>
   <v-content>
-    <Navbar></Navbar>
+    <core-navbar></core-navbar>
     <v-container fluid>
       <v-layout justify-center row wrap>
         <v-flex xs12 md8 justify-center>
@@ -44,15 +44,10 @@
 </template>
 
 <script>
-import Navbar from "@/components/Navbar";
-
 export default {
-  components: {
-    Navbar
-  },
   data: () => ({
     pagination: {
-      rowsPerPage: 10
+      rowsPerPage: 5
     },
     search: "",
     ingredientsHeaders: [
@@ -81,6 +76,7 @@ export default {
   },
   methods: {
     searchRecipes() {
+      this.$store.state.search = true;
       this.$router.push({ path: "/recipes" });
     }
   }

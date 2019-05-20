@@ -7,10 +7,13 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    search: false,
     user: null,
     error: null,
     loading: false,
     ingredients: [],
+    recipes: [],
+    ingredientNames: [],
     apiUrl: 'https://api.edamam.com/search'
   },
   mutations: {
@@ -24,7 +27,38 @@ export default new Vuex.Store({
       this.state.loading = payload;
     },
     setIngredients(state, payload) {
-      this.state.ingredients = payload;
+      const newArrayDataOfOjbect = Object.values(payload);
+      this.state.ingredients = newArrayDataOfOjbect;
+      newArrayDataOfOjbect.forEach(ingredient => {
+        this.state.ingredientNames.push(ingredient.name);
+      });
+    },
+    setRecipes(state, payload) {
+      const newArrayDataOfOjbect = Object.values(payload);
+
+      const selectedIngredients = [];
+
+      if (this.state.ingredients.length > 0 && this.state.search) {
+        this.state.ingredients.forEach(ingredient => {
+          if (ingredient.selected) {
+            selectedIngredients.push(ingredient.name);
+          }
+        });
+        const recipes = newArrayDataOfOjbect.filter(recipe => {
+          if (
+            recipe.ingredients.some(ingredient => {
+              if (selectedIngredients.indexOf(ingredient) > -1) return true;
+              return false;
+            })
+          ) {
+            return true;
+          }
+          return false;
+        });
+        this.state.recipes = recipes;
+      } else {
+        this.state.recipes = newArrayDataOfOjbect;
+      }
     }
   },
   actions: {
@@ -74,6 +108,90 @@ export default new Vuex.Store({
         .on('value', snapshot => {
           commit('setIngredients', snapshot.val());
         });
+    },
+    getRecipes({ commit }) {
+      return firebase
+        .database()
+        .ref('recipes')
+        .on('value', snapshot => {
+          commit('setRecipes', snapshot.val());
+        });
+    },
+    // eslint-disable-next-line no-unused-vars
+    saveIngredient({ state }, payload) {
+      const storageRef = firebase.storage().ref(payload.file.name);
+      const uploadTask = storageRef.put(payload.file);
+
+      uploadTask.on(
+        'state_changed',
+        snapshot => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress} % done`);
+          switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED:
+              console.log('Upload is paused');
+              break;
+            case firebase.storage.TaskState.RUNNING:
+              console.log('Upload is running');
+              break;
+            default:
+              break;
+          }
+        },
+        error => {
+          console.log(error.toString());
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            console.log('File available at', downloadURL);
+
+            // eslint-disable-next-line no-param-reassign
+            payload.ingredient.image = downloadURL;
+            firebase
+              .database()
+              .ref('ingredients')
+              .push(payload.ingredient);
+          });
+        }
+      );
+    },
+    // eslint-disable-next-line no-unused-vars
+    saveRecipe({ state }, payload) {
+      const storageRef = firebase.storage().ref(`recipes/${payload.file.name}`);
+      const uploadTask = storageRef.put(payload.file);
+
+      uploadTask.on(
+        'state_changed',
+        snapshot => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress} % done`);
+          switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED:
+              console.log('Upload is paused');
+              break;
+            case firebase.storage.TaskState.RUNNING:
+              console.log('Upload is running');
+              break;
+            default:
+              break;
+          }
+        },
+        error => {
+          console.log(error.toString());
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            console.log('File available at', downloadURL);
+
+            // eslint-disable-next-line no-param-reassign
+            payload.recipe.image = downloadURL;
+            firebase
+              .database()
+              .ref('recipes')
+              .push(payload.recipe);
+          });
+        }
+      );
     }
   },
   getters: {

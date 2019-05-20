@@ -1,6 +1,8 @@
 /* eslint-disable arrow-parens */
 import '@babel/polyfill';
 import Vue from 'vue';
+// Components
+import './components';
 import './plugins/vuetify';
 import App from './App.vue';
 import router from './router';
